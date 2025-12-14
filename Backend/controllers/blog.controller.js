@@ -1,22 +1,43 @@
 /** @format */
 
-import Blog from "../models/Blog.js";
+import Blog from "../models/BlogSchema.js";
 
 export const createBlog = async (req, res) => {
-	const blog = await Blog.create({
-		...req.body,
-		author: req.user.id,
-	});
-	res.json(blog);
+	try {
+		const { title, content } = req.body;
+		const blog = await Blog.create({
+			title, content,
+			author: req.user.id,
+		});
+		return res
+			.status(200)
+			.json({ success: true, data: blog, message: "Blog created" });
+	} catch (err) {
+		console.log(err.message);
+		return res.status(400).json({
+			success: false,
+			data: String(err),
+			message: "error in creation in blog",
+		});
+	}
 };
 
 export const getBlogs = async (req, res) => {
-	const { search } = req.query;
-	const blogs = await Blog.find({
-		title: { $regex: search || "", $options: "i" },
-	}).populate("author", "name");
-
-	res.json(blogs);
+	try {
+		console.log("inside get blog")
+		const allBlogs = await Blog.find({}).populate("author");
+		console.log(allBlogs);
+		return res.status(200).json({success: true, Blogs: allBlogs, message: "blog fetched successfully"})
+	}
+	catch (err) {
+		return res
+			.status(400)
+			.json({
+				success: false,
+				data: String(err),
+				message: "Error in fetching the blogs",
+			});
+	}
 };
 
 export const getMyBlogs = async (req, res) => {
@@ -25,20 +46,45 @@ export const getMyBlogs = async (req, res) => {
 };
 
 export const updateBlog = async (req, res) => {
-	const blog = await Blog.findById(req.params.id);
-	if (blog.author.toString() !== req.user.id)
-		return res.status(403).json({ message: "Forbidden" });
+	try {
+		const blog = await Blog.findById(req.params.id);
+		if (blog.author.toString() !== req.user.id)
+			return res.status(403).json({ message: "Forbidden" });
 
-	Object.assign(blog, req.body);
-	await blog.save();
-	res.json(blog);
+		Object.assign(blog, req.body);
+		await blog.save();
+		return res
+			.status(200)
+			.json({
+				success: true,
+				message: "Blog updated successfully",
+				data: blog,
+			});
+	} catch (err) {
+		console.log(err.message);
+		return res.status(400).json({
+			success: false,
+			data: String(err),
+			message: "Error in updating the blog",
+		});
+	}
 };
 
 export const deleteBlog = async (req, res) => {
-	const blog = await Blog.findById(req.params.id);
-	if (blog.author.toString() !== req.user.id)
-		return res.status(403).json({ message: "Forbidden" });
+	try {
+		const blog = await Blog.findById(req.params.id);
+		if (blog.author.toString() !== req.user.id)
+			return res.status(403).json({ message: "Forbidden" });
 
-	await blog.deleteOne();
-	res.json({ message: "Blog deleted" });
+		await blog.deleteOne();
+		res.status(200).json({success:true, message: "Blog deleted" });
+	} catch (err) {
+		console.log(err.message);
+		return res.status(400).json({
+			success: false,
+			data: String(err),
+			message: "Error in Deleting the blog",
+		});
+	}
+	
 };

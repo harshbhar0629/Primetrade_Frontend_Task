@@ -1,7 +1,7 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { Blog } from "../../Apis/api";
+import {  BlogApi } from "../../Apis/api";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -16,7 +16,7 @@ const EditBlog = () => {
 
 	const update = async () => {
 		try {
-			const res = await Blog("", "", "");
+			const res = await BlogApi("", "", "");
 			toast.success("Blog updated");
 			navigate("/dashboard");
 		} catch {

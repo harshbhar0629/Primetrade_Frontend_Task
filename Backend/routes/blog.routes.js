@@ -1,7 +1,7 @@
 /** @format */
 
 import express from "express";
-import auth from "../middleware/auth.middleware.js";
+import auth from "../middlewares/auth.middleware.js";
 import multer from "multer";
 import {
 	createBlog,

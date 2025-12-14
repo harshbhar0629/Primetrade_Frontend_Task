@@ -1,32 +1,85 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { BlogApi } from "../../Apis/api";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 const Home = () => {
 	const [blogs, setBlogs] = useState([]);
+	const dispatch = useDispatch();
 	const [search, setSearch] = useState("");
+	const [filteredBlogs, setFilteredBlogs] = useState([]);
 
-	useEffect(() => {
-		
+	const getAllBlogs = useCallback(async () => {
+		try {
+			const res = await BlogApi("get", "/", {}, "");
+			dispatch(se)
+			toast.success(res?.data?.message);
+			setBlogs(res?.data?.Blogs);
+		} catch (err) {
+			console.log(err.message);
+		}
 	}, []);
 
-	return (
-		<div className="p-6">
-			<input
-				className="border p-2 w-full mb-4"
-				placeholder="Search blog by title..."
-				onChange={(e) => setSearch(e.target.value)}
-			/>
+	useEffect(() => {
+		const setBlog = () => {
+			if (blogs.length <= 0) return;
+			setFilteredBlogs(
+				search.trim() === ""
+					? blogs
+					: blogs.filter((blog) =>
+							blog.title?.toLowerCase().includes(search.toLowerCase())
+					  )
+			);
+		};
+		setBlog();
+	}, [blogs, search]);
 
-			{blogs && blogs.map((blog) => (
-				<div
-					key={blog._id}
-					className="border p-4 mb-3 rounded">
-					<h2 className="text-xl font-bold">{blog.title}</h2>
-					<p>{blog.content}</p>
-					<p className="text-sm text-gray-500">By {blog.author?.name}</p>
+	useEffect(() => {
+		getAllBlogs();
+	}, [getAllBlogs]);
+
+	return (
+		<div className="min-h-screen bg-gray-100 py-10">
+			<div className="max-w-6xl mx-auto px-4">
+				<h3 className="text-center font-extrabold text-5xl mb-8 text-gray-800">
+					All Blogs
+				</h3>
+
+				<input
+					className="border border-gray-300 rounded-xl p-3 w-full mb-8 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+					placeholder="🔍 Search blog by title..."
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+				/>
+
+				<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+					{filteredBlogs?.length > 0 ? (
+						filteredBlogs.map((blog) => (
+							<div
+								key={blog._id}
+								className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
+								<h2 className="text-2xl font-bold text-gray-800 mb-3">
+									{blog.title}
+								</h2>
+
+								<p className="text-gray-600 mb-4 line-clamp-4">
+									{blog.content}
+								</p>
+
+								<div className="flex justify-between items-center text-lg text-gray-500">
+									<span>✍️ {blog.author?.name || "Anonymous"}</span>
+								</div>
+							</div>
+						))
+					) : (
+						<p className="col-span-full text-center text-gray-500 text-xl">
+							No blogs found "{search}"
+						</p>
+					)}
 				</div>
-			))}
+			</div>
 		</div>
 	);
 };

@@ -1,7 +1,7 @@
 /** @format */
 
 import { useState } from "react";
-import { Blog } from "../../Apis/api";
+import { BlogApi } from "../../Apis/api";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ const CreateBlog = () => {
 	const submit = async (e) => {
 		e.preventDefault();
 		try {
-			const res = await Blog("", "", "");
+			const res = await BlogApi("", "", "");
 			toast.success("Blog created");
 			navigate("/");
 		} catch {

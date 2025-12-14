@@ -3,10 +3,11 @@
 import jwt from "jsonwebtoken";
 
 const authMiddleware = async (req, res, next) => {
+	console.log(req.header);
 	const token =
-		req.cookies.token ||
-		req.body.token ||
-		req.header("Authorization").replace("Bearer ", "");
+		req?.cookies?.token ||
+		req?.body?.token ||
+		req?.header("Authorization")?.replace("Bearer ", "");
 	if (!token) return res.status(401).json({ message: "Unauthorized User token missing" });
 
 	try {

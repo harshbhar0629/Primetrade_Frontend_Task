@@ -13,6 +13,7 @@ import Dashboard from "./components/Pages/Dashboard";
 import CreateBlog from "./components/Blog/CreateBlog";
 
 function App() {
+	
 	return (
 		<BrowserRouter>
 			<Navbar />
@@ -39,14 +40,14 @@ function App() {
 						</ProtectedRoute>
 					}
 				/>
-				<Route
+				{/* <Route
 					path="/edit/:id"
 					element={
 						<ProtectedRoute>
 							<EditBlog />
 						</ProtectedRoute>
 					}
-				/>
+				/> */}
 
 				<Route
 					path="/dashboard"
