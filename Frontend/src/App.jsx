@@ -11,6 +11,7 @@ import Login from "./components/Pages/Login";
 import Signup from "./components/Pages/Signup";
 import Dashboard from "./components/Pages/Dashboard";
 import CreateBlog from "./components/Blog/CreateBlog";
+import EditBlog from "./components/Blog/EditBlog";
 
 function App() {
 	
@@ -40,14 +41,14 @@ function App() {
 						</ProtectedRoute>
 					}
 				/>
-				{/* <Route
+				<Route
 					path="/edit/:id"
 					element={
 						<ProtectedRoute>
 							<EditBlog />
 						</ProtectedRoute>
 					}
-				/> */}
+				/>
 
 				<Route
 					path="/dashboard"

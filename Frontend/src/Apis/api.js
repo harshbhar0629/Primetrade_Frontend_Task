@@ -33,8 +33,7 @@ export const AuthApi = async (method, url, bodyData, dispatch) => {
 		});
 		localStorage.setItem("token", JSON.stringify(response?.data?.token));
 		dispatch(setUserData(response?.data?.userObj));
-		
-		dispatch(setToken(JSON.stringify(response?.data?.token)));
+		localStorage.setItem("user", JSON.stringify(response?.data?.userObj));
 		console.log(response);
 		return response;
 	} catch {

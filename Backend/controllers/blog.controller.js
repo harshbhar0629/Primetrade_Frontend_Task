@@ -51,14 +51,13 @@ export const updateBlog = async (req, res) => {
 		if (blog.author.toString() !== req.user.id)
 			return res.status(403).json({ message: "Forbidden" });
 
-		Object.assign(blog, req.body);
-		await blog.save();
+		const updatedBlog = await Blog.findByIdAndUpdate({_id: req.params.id}, { title: req.body?.title, content: req.body?.content }, {new: true});
 		return res
 			.status(200)
 			.json({
 				success: true,
 				message: "Blog updated successfully",
-				data: blog,
+				data: updatedBlog,
 			});
 	} catch (err) {
 		console.log(err.message);

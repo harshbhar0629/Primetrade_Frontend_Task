@@ -3,19 +3,26 @@
 import { useEffect, useState, useCallback } from "react";
 import { BlogApi } from "../../Apis/api";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setBlogsData } from "../../redux/slices/blogSlice";
 
 const Home = () => {
 	const [blogs, setBlogs] = useState([]);
 	const dispatch = useDispatch();
 	const [search, setSearch] = useState("");
+	const v = useSelector((state) => state.blog);
 	const [filteredBlogs, setFilteredBlogs] = useState([]);
+	console.log(v);
 
 	const getAllBlogs = useCallback(async () => {
 		try {
 			const res = await BlogApi("get", "/", {}, "");
-			dispatch(se)
+			dispatch(setBlogsData(res?.data?.Blogs));
+			localStorage.setItem("blogsData", JSON.stringify(res?.data?.Blogs));
+			
 			toast.success(res?.data?.message);
+			console.log("xcvbn")
+			console.log(res?.data?.Blogs)
 			setBlogs(res?.data?.Blogs);
 		} catch (err) {
 			console.log(err.message);

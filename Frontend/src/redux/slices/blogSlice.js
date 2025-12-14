@@ -3,7 +3,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-	blogsData: null,
+	blogsData: localStorage.getItem("blogsData")
+		? JSON?.parse(localStorage?.getItem("blogsData"))
+		: null,
 };
 
 const blogSlice = createSlice({
