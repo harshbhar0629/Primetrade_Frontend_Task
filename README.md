@@ -82,12 +82,12 @@ PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/blog_app
 JWT_SECRET=your_strong_secret_key_here
 
-## ▶️ How to Run the Project Locally
+# ▶️ How to Run the Project Locally
 # 1️⃣ Clone the Repository
-git clone [https://github.com/harshbhar0629/Primetrade_Frontend_Task.git](https://github.com/harshbhar0629/Primetrade_Frontend_Task.git)
+git clone [https://github.com/harshbhar0629/Primetrade_Frontend_Task.git]
 cd Primetrade_Frontend_Task
 
-## Install Dependencies
+# Install Dependencies
 # Navigate to each directory and install dependencies:
 
 # Install Backend dependencies
@@ -98,7 +98,7 @@ npm install
 cd ../frontend
 npm install
 
-## Start the Application
+# Start the Application
 # Open two separate terminal tabs for the backend and frontend.
 
 # Start Backend
@@ -116,5 +116,5 @@ Frontend Application: http://localhost:5173
 🔗 GitHub Repository
 👉 https://github.com/harshbhar0629/Primetrade_Frontend_Task
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 # Harsh Bhardwaj
