@@ -10,21 +10,26 @@ import { setBlogsData } from "../../redux/slices/blogSlice";
 const CreateBlog = () => {
 	const [blog, setBlog] = useState({});
 	const token = useSelector((state) => state?.auth?.token);
-	const allBlogs = useSelector((state) => state?.blogs?.blogsData);
+	const allBlogs = useSelector((state) => state?.blog?.blogsData);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
 
 	const submit = async (e) => {
 		e.preventDefault();
+		const id = toast.loading("loading..");
 		try {
-			const res = await BlogApi("post", "/create", blog, token);
-			let updatedBlogs = [...allBlogs];
-			updatedBlogs.push(res?.data?.blog);
-			localStorage.setItem("blogsData", JSON.stringify(res?.data?.Blogs));
-			dispatch(setBlogsData(updatedBlogs))
+			const res = await BlogApi("post", "/", blog, token);
+			const updatedBlogs = [res?.data?.blog, ...allBlogs]
+			console.log(updatedBlogs)
+			localStorage.setItem("blogsData", JSON.stringify(updatedBlogs));
+			dispatch(setBlogsData(updatedBlogs));
+			toast.dismiss(id);
 			toast.success("Blog created successfully 🚀");
-			navigate("/");
-		} catch {
+			navigate("/dashboard");
+		} catch (err) {
+			console.log(err.message)
+			toast.dismiss(id)
 			toast.error("Failed to create blog");
 		}
 	};
@@ -72,6 +77,7 @@ const CreateBlog = () => {
 
 					{/* BUTTON */}
 					<button
+						disabled={loading}
 						type="submit"
 						className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 rounded-xl shadow-lg hover:scale-[1.02] hover:shadow-xl transition-all duration-300">
 						Publish Blog 🚀

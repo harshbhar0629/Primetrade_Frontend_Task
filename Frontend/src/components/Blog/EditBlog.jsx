@@ -47,26 +47,29 @@ const EditBlog = () => {
 		) {
 			return;
 		}
+		
+		const id = toast.loading("loading..");
 		try {
 			console.log("inside update blog");
+			setloading(true);
 			const res = await BlogApi("put", "/" + id, blog, token);
 			// data data
+			setloading(false);
 			const updatedBlog = res?.data?.data;
-			console.log(updatedBlog);
 			let blogsData = allBlogs;
 			blogsData = blogsData?.map((blog) =>
 				String(blog?._id) === String(updatedBlog?._id) ? updatedBlog : blog
 			);
-			console.log("edit blogs");
-			console.log(blogsData);
 
-			localStorage.setItem("blogsData", null);
 			localStorage.setItem("blogsData", JSON.stringify(blogsData));
 			dispatch(setBlogsData(blogsData));
 			console.log(localStorage.getItem("blogsData"));
+			toast.dismiss(id);
 			toast.success("Blog updated successfully");
 			navigate("/dashboard");
-		} catch {
+		} catch (err) {
+			toast.dismiss(id);
+			console.log(err.message)
 			toast.error("Failed to update blog");
 		}
 	};

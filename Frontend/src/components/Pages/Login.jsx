@@ -13,11 +13,14 @@ const Login = () => {
 
 	const submit = async (e) => {
 		e.preventDefault();
+		const id = toast.loading("loading..");
 		try {
 			await AuthApi("post", "/login", data, dispatch);
+			toast.dismiss(id);
 			toast.success("Logged in Successfully!");
 			navigate("/dashboard");
 		} catch {
+			toast.dismiss(id);
 			toast.error("Invalid credentials");
 		}
 	};

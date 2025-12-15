@@ -5,10 +5,11 @@ import Blog from "../models/BlogSchema.js";
 export const createBlog = async (req, res) => {
 	try {
 		const { title, content } = req.body;
-		const blog = await Blog.create({
+		const newBlog = await Blog.create({
 			title, content,
 			author: req.user.id,
 		});
+		const blog = await Blog.findById(newBlog._id).populate("author")
 		return res
 			.status(200)
 			.json({ success: true, blog, message: "Blog created" });

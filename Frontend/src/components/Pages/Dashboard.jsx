@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { UserApi, UserApiDelete } from "../../Apis/api";
+import { BlogApi, UserApi, UserApiDelete } from "../../Apis/api";
 import { useDispatch, useSelector } from "react-redux";
+import { setBlogsData } from "../../redux/slices/blogSlice";
 
 const Dashboard = () => {
 	const userData = useSelector((state) => state?.auth?.userData);
@@ -26,41 +27,56 @@ const Dashboard = () => {
 	const navigate = useNavigate();
 
 	const updateProfile = async () => {
+		const id = toast.loading("loading..");
 		try {
-			setLoading(true)
+			setLoading(true);
 			const res = await UserApi("put", "/update", profile, dispatch, token);
-			setLoading(false)
+			toast.dismiss(id);
+			setLoading(false);
 			toast.success("Profile updated successfully");
-		} catch(err) {
+		} catch (err) {
+			toast.dismiss(id);
 			toast.error("Error updating profile");
 		}
 	};
 
 	const deleteProfile = async () => {
+		const id = toast.loading("loading..");
 		try {
 			if (!password) return toast.error("Password required");
-			setLoading(true)
+			setLoading(true);
 			const res = await UserApiDelete(
 				"post",
 				"/delete",
 				{ password: password },
 				token
 			);
-			setLoading(false)
+			setLoading(false);
+			toast.dismiss(id);
 			navigate("/");
 			toast.success("Profile deleted");
 		} catch (err) {
 			console.log(err.message);
+			toast.dismiss(id);
 			toast.error("Error in deleting the profile");
 		}
 	};
 
 	const deleteBlog = async (id) => {
+		const id = toast.loading("loading..");
 		try {
-			await UserApi("delete", `/blog/${id}`, {}, dispatch);
+			setLoading(true)
+			await BlogApi("delete", `/blog/${id}`, {}, token);
+			setLoading(false);
+			const updatedBlog = allBlogs.filter((b) => String(b._id) !== String(id));
+			localStorage.setItem("blogsData", JSON.stringify(updatedBlog));
+			dispatch(setBlogsData(updatedBlog));
 			setBlogs(blogs.filter((b) => b._id !== id));
+			toast.dismiss(id);
 			toast.success("Blog deleted");
-		} catch {
+		} catch (err) {
+			console.log(err.message);
+			toast.dismiss(id);
 			toast.error("Failed to delete blog");
 		}
 	};
@@ -207,6 +223,7 @@ const Dashboard = () => {
 												Edit
 											</Link>
 											<button
+												disabled={loading}
 												onClick={() => deleteBlog(blog._id)}
 												className="text-red-600 font-semibold">
 												Delete

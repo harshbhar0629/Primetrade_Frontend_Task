@@ -13,12 +13,15 @@ const Signup = () => {
 
 	const submit = async (e) => {
 		e.preventDefault();
+		const id = toast.loading("loading..");
 		try {
 			const details = await AuthApi("post", "/signup", data, dispatch);
 			console.log(details);
 			navigate("/dashboard");
+			toast.dismiss(id);
 			toast.success("Account created successfully");
 		} catch {
+			toast.dismiss(id)
 			toast.error("Signup failed");
 			console.log(err.message);
 		}

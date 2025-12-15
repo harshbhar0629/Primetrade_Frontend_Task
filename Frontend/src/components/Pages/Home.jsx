@@ -16,10 +16,12 @@ const Home = () => {
 	console.log(v);
 
 	const getAllBlogs = useCallback(async () => {
+		const id = toast.loading("loading..");
 		try {
 			const res = await BlogApi("get", "/", {}, "");
 			dispatch(setBlogsData(res?.data?.Blogs));
 			localStorage.setItem("blogsData", JSON.stringify(res?.data?.Blogs));
+			toast.dismiss(id);
 
 			toast.success(res?.data?.message);
 			console.log("xcvbn");
@@ -27,6 +29,7 @@ const Home = () => {
 			setBlogs(res?.data?.Blogs);
 		} catch (err) {
 			console.log(err.message);
+			toast.dismiss(id);
 		}
 	}, []);
 
