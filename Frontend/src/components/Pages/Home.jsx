@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setBlogsData } from "../../redux/slices/blogSlice";
 
 const Home = () => {
-	const [blogs, setBlogs] = useState([]);
+	const allBlogs = useSelector((state) => state?.blog?.blogsData);
+	const [blogs, setBlogs] = useState(allBlogs || []);
 	const dispatch = useDispatch();
 	const [search, setSearch] = useState("");
 	const v = useSelector((state) => state.blog);
@@ -19,10 +20,10 @@ const Home = () => {
 			const res = await BlogApi("get", "/", {}, "");
 			dispatch(setBlogsData(res?.data?.Blogs));
 			localStorage.setItem("blogsData", JSON.stringify(res?.data?.Blogs));
-			
+
 			toast.success(res?.data?.message);
-			console.log("xcvbn")
-			console.log(res?.data?.Blogs)
+			console.log("xcvbn");
+			console.log(res?.data?.Blogs);
 			setBlogs(res?.data?.Blogs);
 		} catch (err) {
 			console.log(err.message);
@@ -31,7 +32,7 @@ const Home = () => {
 
 	useEffect(() => {
 		const setBlog = () => {
-			if (blogs.length <= 0) return;
+			if (blogs?.length <= 0) return;
 			setFilteredBlogs(
 				search.trim() === ""
 					? blogs
@@ -44,7 +45,9 @@ const Home = () => {
 	}, [blogs, search]);
 
 	useEffect(() => {
-		getAllBlogs();
+		if (blogs?.length === 0) {
+			getAllBlogs();
+		}
 	}, [getAllBlogs]);
 
 	return (

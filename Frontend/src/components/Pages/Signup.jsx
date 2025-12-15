@@ -4,6 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthApi } from "../../Apis/api";
 
 const Signup = () => {
 	const [data, setData] = useState({});
@@ -13,10 +14,13 @@ const Signup = () => {
 	const submit = async (e) => {
 		e.preventDefault();
 		try {
+			const details = await AuthApi("post", "/signup", data, dispatch);
+			console.log(details);
+			navigate("/dashboard");
 			toast.success("Account created successfully");
-			navigate("/login");
 		} catch {
 			toast.error("Signup failed");
+			console.log(err.message);
 		}
 	};
 

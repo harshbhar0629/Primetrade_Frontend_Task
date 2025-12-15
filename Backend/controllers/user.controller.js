@@ -19,7 +19,7 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
 	try {
-		const user = await User.findById(req.user.id).select("-password");
+		const user = await User.findById(req.user.id);
 		console.log(user);
 		const data = req.body;
 		delete data.password;
@@ -29,7 +29,7 @@ export const updateProfile = async (req, res) => {
 		await user.save();
 		return res
 			.status(200)
-			.json({ success: true, message: "User profile updated", userObj });
+			.json({ success: true, message: "User profile updated", userObj:user });
 	} catch (err) {
 		return res.status(400).json({
 			success: false,
@@ -47,7 +47,7 @@ export const deleteProfile = async (req, res) => {
 		if (!(await bcrypt.compare(password, user.password)))
 			return res.status(400).json({ message: "Wrong password" });
 
-		await user.findByIdAndDelete(req.user.id);
+		await User.findByIdAndDelete({_id: req?.user?.id});
 		return res
 			.status(200)
 			.json({ success: true, message: "Profile deleted Successfully" });

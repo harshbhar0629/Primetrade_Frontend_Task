@@ -52,14 +52,18 @@ const EditBlog = () => {
 			const res = await BlogApi("put", "/" + id, blog, token);
 			// data data
 			const updatedBlog = res?.data?.data;
+			console.log(updatedBlog);
 			let blogsData = allBlogs;
-			blogsData = blogsData.map((blog) =>
+			blogsData = blogsData?.map((blog) =>
 				String(blog?._id) === String(updatedBlog?._id) ? updatedBlog : blog
 			);
+			console.log("edit blogs");
+			console.log(blogsData);
 
-			dispatch(setBlogsData(blogsData));
 			localStorage.setItem("blogsData", null);
 			localStorage.setItem("blogsData", JSON.stringify(blogsData));
+			dispatch(setBlogsData(blogsData));
+			console.log(localStorage.getItem("blogsData"));
 			toast.success("Blog updated successfully");
 			navigate("/dashboard");
 		} catch {
@@ -69,7 +73,6 @@ const EditBlog = () => {
 
 	return (
 		<>
-			{/* INLINE ANIMATION */}
 			<style>{`
 				@keyframes slideUp {
 					from {

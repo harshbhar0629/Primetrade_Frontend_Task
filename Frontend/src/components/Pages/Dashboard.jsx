@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
-import { UserApi } from "../../Apis/api";
+import { Link, useNavigate } from "react-router-dom";
+import { UserApi, UserApiDelete } from "../../Apis/api";
 import { useDispatch, useSelector } from "react-redux";
 
 const Dashboard = () => {
 	const userData = useSelector((state) => state?.auth?.userData);
 	const allBlogs = useSelector((state) => state?.blog?.blogsData);
+	const [loading, setLoading] = useState(false);
 
 	const [profile, setProfile] = useState({
 		name: "",
@@ -18,25 +19,40 @@ const Dashboard = () => {
 	});
 	const [blogs, setBlogs] = useState([]);
 	const [password, setPassword] = useState("");
-	const [activeTab, setActiveTab] = useState("profile");
+	const [activeTab, setActiveTab] = useState("");
 	const [expandedBlog, setExpandedBlog] = useState(null);
-
 	const dispatch = useDispatch();
+	const token = useSelector((state) => state?.auth?.token);
+	const navigate = useNavigate();
 
 	const updateProfile = async () => {
 		try {
-			await UserApi("put", "/update", profile, dispatch);
+			setLoading(true)
+			const res = await UserApi("put", "/update", profile, dispatch, token);
+			setLoading(false)
 			toast.success("Profile updated successfully");
-		} catch {
+		} catch(err) {
 			toast.error("Error updating profile");
 		}
 	};
 
 	const deleteProfile = async () => {
-		if (!password) return toast.error("Password required");
-		localStorage.removeItem("token");
-		toast.success("Profile deleted");
-		window.location.href = "/";
+		try {
+			if (!password) return toast.error("Password required");
+			setLoading(true)
+			const res = await UserApiDelete(
+				"post",
+				"/delete",
+				{ password: password },
+				token
+			);
+			setLoading(false)
+			navigate("/");
+			toast.success("Profile deleted");
+		} catch (err) {
+			console.log(err.message);
+			toast.error("Error in deleting the profile");
+		}
 	};
 
 	const deleteBlog = async (id) => {
@@ -56,9 +72,17 @@ const Dashboard = () => {
 			phone: userData?.phone,
 			description: userData?.description,
 		});
+		console.log("all blog");
 
+		console.log(
+			allBlogs?.filter((blog) => blog?.author?._id === userData?._id)
+		);
 		setBlogs(allBlogs?.filter((blog) => blog?.author?._id === userData?._id));
 	}, [userData, allBlogs]);
+
+	useEffect(() => {
+		setActiveTab("profile");
+	}, []);
 
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 py-12">
@@ -104,10 +128,12 @@ const Dashboard = () => {
 							<input
 								className="border rounded-xl p-3 focus:ring-2 focus:ring-indigo-500"
 								placeholder="Phone"
+								type="tel"
 								value={profile.phone || ""}
-								onChange={(e) =>
-									setProfile({ ...profile, phone: e.target.value })
-								}
+								onChange={(e) => {
+									const value = e.target.value.replace(/\D/g, "");
+									setProfile({ ...profile, phone: value });
+								}}
 							/>{" "}
 							<input
 								className="border rounded-xl p-3 focus:ring-2 focus:ring-indigo-500"
@@ -127,6 +153,7 @@ const Dashboard = () => {
 							/>{" "}
 						</div>{" "}
 						<button
+							disabled={loading}
 							onClick={updateProfile}
 							className="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition shadow-lg">
 							{" "}
@@ -145,6 +172,7 @@ const Dashboard = () => {
 								onChange={(e) => setPassword(e.target.value)}
 							/>{" "}
 							<button
+								disabled={loading}
 								onClick={deleteProfile}
 								className="bg-red-600 text-white px-6 py-3 rounded-xl w-full hover:bg-red-700 transition shadow-md">
 								{" "}

@@ -11,7 +11,7 @@ export const createBlog = async (req, res) => {
 		});
 		return res
 			.status(200)
-			.json({ success: true, data: blog, message: "Blog created" });
+			.json({ success: true, blog, message: "Blog created" });
 	} catch (err) {
 		console.log(err.message);
 		return res.status(400).json({
@@ -51,7 +51,7 @@ export const updateBlog = async (req, res) => {
 		if (blog.author.toString() !== req.user.id)
 			return res.status(403).json({ message: "Forbidden" });
 
-		const updatedBlog = await Blog.findByIdAndUpdate({_id: req.params.id}, { title: req.body?.title, content: req.body?.content }, {new: true});
+		const updatedBlog = await Blog.findByIdAndUpdate({_id: req.params.id}, { title: req.body?.title, content: req.body?.content }, {new: true}).populate("author");
 		return res
 			.status(200)
 			.json({

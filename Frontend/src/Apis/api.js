@@ -33,6 +33,7 @@ export const AuthApi = async (method, url, bodyData, dispatch) => {
 		});
 		localStorage.setItem("token", JSON.stringify(response?.data?.token));
 		dispatch(setUserData(response?.data?.userObj));
+		dispatch(setToken(response?.data?.token));
 		localStorage.setItem("user", JSON.stringify(response?.data?.userObj));
 		console.log(response);
 		return response;
@@ -44,17 +45,42 @@ export const AuthApi = async (method, url, bodyData, dispatch) => {
 	}
 };
 
-export const UserApi = async (method, url, bodyData, dispatch) => {
+export const UserApiDelete = async (method, url, bodyData, token) => {
 	try {
 		const response = await app({
 			method: method,
 			url: backUrl + `/users${url}`,
 			data: bodyData,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
 		});
-		localStorage.setItem("token", JSON.stringify(response?.data?.token));
-		dispatch(setUserData(response?.data?.userObj));
-		dispatch(setToken(JSON.stringify(response?.data?.token)));
+		localStorage.removeItem("token");
+		localStorage.removeItem("user");
 		console.log(response);
+		return response;
+	} catch {
+		console.log(err.message);
+		return String(err);
+	} finally {
+		console.log("finally!");
+	}
+};
+
+
+export const UserApi = async (method, url, bodyData, dispatch, token) => {
+	try {
+		const response = await app({
+			method: method,
+			url: backUrl + `/users${url}`,
+			data: bodyData,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		console.log(response)
+		localStorage.setItem("user", JSON.stringify(response?.data?.userObj));
+		dispatch(setUserData(response?.data?.userObj));
 		return response;
 	} catch {
 		console.log(err.message);
