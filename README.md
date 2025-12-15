@@ -68,8 +68,30 @@ This project demonstrates real-world frontend and backend integration with a foc
 
 ## 📂 Project Structure
 
-A clean, separated structure for frontend and backend components:
-Primetrade_Frontend_Task/ ├── frontend/ # React App (Client) │ ├── src/ │ ├── components/ │ ├── pages/ │ └── redux/ │ ├── backend/ # Node/Express App (Server) │ ├── controllers/ # Business logic for routes │ ├── models/ # Mongoose schemas │ ├── routes/ # API endpoint definitions │ ├── middleware/ # Custom middleware (e.g., JWT authentication) │ └── server.js # Entry point │ └── README.md
+Primetrade_Frontend_Task/
+│
+├── frontend/                      # React App (Client)
+│   ├── public/                    # Static files
+│   ├── src/
+│   │   ├── components/            # Reusable UI components
+│   │   ├── pages/                 # Page-level components
+│   │   ├── redux/                 # Redux store, slices
+│   │   ├── App.jsx                # Root component
+│   │   └── main.jsx               # Entry point
+│   ├── package.json
+│   └── vite.config.js
+│
+├── backend/                       # Node / Express App (Server)
+│   ├── controllers/               # Business logic
+│   ├── models/                    # Mongoose schemas
+│   ├── routes/                    # API routes
+│   ├── middleware/                # Custom middleware (JWT, auth)
+│   ├── server.js                  # Server entry point
+│   ├── package.json
+│   └── .env
+│
+├── .gitignore
+└── README.md
 
 ---
 
