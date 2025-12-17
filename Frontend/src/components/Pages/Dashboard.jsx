@@ -72,11 +72,11 @@ const Dashboard = () => {
 			localStorage.setItem("blogsData", JSON.stringify(updatedBlog));
 			dispatch(setBlogsData(updatedBlog));
 			setBlogs(blogs.filter((b) => b._id !== id));
-			toast.dismiss(id);
+			toast.dismiss(ids);
 			toast.success("Blog deleted");
 		} catch (err) {
 			console.log(err.message);
-			toast.dismiss(id);
+			toast.dismiss(ids);
 			toast.error("Failed to delete blog");
 		}
 	};
