@@ -63,7 +63,7 @@ const Dashboard = () => {
 	};
 
 	const deleteBlog = async (id) => {
-		const id = toast.loading("loading..");
+		const ids = toast.loading("loading..");
 		try {
 			setLoading(true)
 			await BlogApi("delete", `/blog/${id}`, {}, token);
